@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Boda - Daniel y Paola</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --color-bordo: #9c2a35; /* Bordó vivo, luminoso y diurno */
+            --color-cera: #d12c3b;  /* Sello de cera brillante */
+            --color-texto: #333333;
+            --color-dorado: #b8975a;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #F3EFE9; /* Fondo claro y sofisticado diurno en escritorio */
+            color: var(--color-texto);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Tipografías especiales */
+        .font-script { font-family: 'Great Vibes', cursive; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+
+        /* Contenedor principal tamaño móvil */
+        .mobile-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: #FCFBF9;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(184, 151, 90, 0.15);
+        }
+
+        /* Textura de papel antiguo/tejido */
+        .paper-texture {
+            background-color: #Fdfcfb;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        /* Pantalla de bienvenida con sobre: fondo claro y diurno */
+        #envelope-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F7F5F0;
+            background-image: radial-gradient(circle at center, #FDFBF7 0%, #EFEBE4 100%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope-hidden {
+            opacity: 0;
+            transform: scale(1.1) translateY(-50px);
+            pointer-events: none;
+        }
+
+        /* Caja del Sobre con tono bordó diurno y alegre */
+        .envelope-box {
+            position: relative;
+            width: 340px;
+            height: 230px;
+            background-color: #92222d;
+            box-shadow: 0 20px 45px rgba(122, 27, 36, 0.25);
+            border-radius: 0 0 12px 12px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        /* Solapa superior (Triángulo) */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 170px solid transparent;
+            border-right: 170px solid transparent;
+            border-top: 130px solid #a32d39;
+            transform-origin: top;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.4s;
+            z-index: 3;
+            filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15));
+        }
+
+        .envelope-flap.open {
+            transform: rotateX(180deg);
+            z-index: 1;
+            filter: drop-shadow(0 -4px 5px rgba(0,0,0,0.1));
+        }
+
+        /* Solapas laterales del sobre */
+        .envelope-side-left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 170px solid #99242f;
+            border-top: 115px solid transparent;
+            border-bottom: 115px solid transparent;
+            z-index: 2;
+        }
+
+        .envelope-side-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-right: 170px solid #99242f;
+            border-top: 115px solid transparent;
+            border-bottom: 115px solid transparent;
+            z-index: 2;
+        }
+
+        /* Solapa inferior del sobre */
+        .envelope-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 170px solid transparent;
+            border-right: 170px solid transparent;
+            border-bottom: 125px solid #a02934;
+            border-radius: 0 0 12px 12px;
+            z-index: 2;
+        }
+
+        /* La carta que emerge */
+        .envelope-letter {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 310px;
+            height: 190px;
+            background: #fdfcfb;
+            background-image: radial-gradient(circle, #ffffff 60%, #f4f1ea 100%);
+            border-radius: 6px;
+            z-index: 1;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            border: 1px solid #e1dbcd;
+        }
+
+        .envelope-letter.emerged {
+            transform: translateY(-160px) scale(1.05);
+            z-index: 4;
+            box-shadow: 0 15px 30px rgba(122, 27, 36, 0.15);
+        }
+
+        /* Sello medieval simétrico y perfectamente centrado */
+        .wax-seal {
+            width: 76px;
+            height: 76px;
+            background: radial-gradient(circle at 35% 35%, #e03645 0%, #a81c26 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 0 0 10px rgba(40,0,0,0.5),
+                0 6px 12px rgba(122, 27, 36, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+            top: 88px;
+            left: 132px; /* Centrado perfecto para un sobre de 340px: (340 - 76) / 2 = 132px */
+            z-index: 4;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #8c131c;
+        }
+
+        .wax-seal:hover {
+            transform: scale(1.08);
+            box-shadow: inset 0 0 12px rgba(40,0,0,0.6), 0 10px 18px rgba(122, 27, 36, 0.4);
+        }
+
+        .wax-seal::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255,255,255,0.2);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+        }
+
+        .wax-seal-opened {
+            transform: scale(0.3) translateY(120px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Fotos Polaroid - Ajustadas para reducir el marco blanco */
+        .polaroid {
+            background: #fff;
+            padding: 8px 8px 18px 8px; /* Reducido de 12px/28px para achicar el borde blanco */
+            box-shadow: 0 8px 20px rgba(184, 151, 90, 0.12);
+            border: 1px solid #e5e1d8;
+            transition: transform 0.3s ease;
+        }
+        
+        .polaroid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Decoración floral (SVG posiciones) */
+        .floral-corner {
+            position: absolute;
+            width: 155px;
+            opacity: 0.85;
+            pointer-events: none;
+        }
+        .floral-top-left { top: -15px; left: -15px; transform: rotate(5deg); }
+        .floral-bottom-right { bottom: -15px; right: -15px; transform: rotate(180deg); }
+
+        /* Botón de música */
+        #music-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--color-dorado);
+            color: var(--color-dorado);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        #music-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Animación Fade-in para el contenido */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Botón elegante */
+        .btn-elegante {
+            background-color: transparent;
+            border: 1px solid var(--color-dorado);
+            color: var(--color-dorado);
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(184, 151, 90, 0.08);
+        }
+        .btn-elegante:hover {
+            background-color: var(--color-dorado);
+            color: white;
+            box-shadow: 0 6px 15px rgba(184, 151, 90, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-[#F3EFE9] flex justify-center items-center min-h-screen">
+
+    <audio id="bgMusic" loop>
+        <!-- Enlace real de Dropbox optimizado con dl=1 para streaming directo -->
+        <source src="https://www.dropbox.com/scl/fi/cboxbdkrjypw3jeh85cu2/musicainvitacion.mp3.mp3?rlkey=nax8abl8p200yyhoie66t7r8x&st=e7izk6xl&dl=1" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <div id="envelope-container">
+        <p id="envelope-text" class="font-script text-[#7a1b24] text-4xl mb-12 opacity-95 tracking-wider text-center transition-all duration-700">Llegó tu invitación</p>
+        
+        <!-- Caja tridimensional del sobre en tonos diurnos -->
+        <div class="envelope-box" id="envelopeBox">
+            <!-- Solapa superior trasera e interna que abre -->
+            <div class="envelope-flap" id="envelopeFlap"></div>
+            
+            <!-- Laterales del sobre -->
+            <div class="envelope-side-left"></div>
+            <div class="envelope-side-right"></div>
+            
+            <!-- Fondo del sobre -->
+            <div class="envelope-bottom"></div>
+
+            <!-- La carta interior que se asoma y emerge -->
+            <div class="envelope-letter" id="envelopeLetter">
+                <span class="font-sans text-[10px] uppercase tracking-[0.2em] text-[#b8975a] mb-1">Boda</span>
+                <span class="font-script text-4xl text-[#7a1b24]">Daniel & Paola</span>
+                <div class="w-8 h-[1px] bg-[#b8975a] my-2"></div>
+                <span class="font-sans text-[8px] uppercase tracking-[0.1em] text-gray-400">27.09.2026</span>
+            </div>
+
+            <!-- Sello medieval perfectamente alineado y proporcionado -->
+            <div class="wax-seal" id="waxSeal" onclick="abrirInvitacion()">
+                <span class="font-script text-lg text-yellow-100 flex items-center justify-center leading-none select-none tracking-widest" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">D&P</span>
+            </div>
+        </div>
+        
+        <p id="envelope-instruction" class="text-[#b8975a] mt-12 font-sans text-xs tracking-[0.2em] uppercase opacity-90 animate-pulse text-center">Toca el sello para abrir</p>
+    </div>
+
+    <div class="mobile-container paper-texture relative pb-20">
+        
+        <!-- Ramas decorativas vectoriales finas en las esquinas -->
+        <svg class="floral-corner floral-top-left" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10,190 C10,190 30,100 150,50 C150,50 110,60 90,90 C90,90 140,40 180,10" stroke="#7A9A65" stroke-width="1.5" fill="none"/>
+            <path d="M40,150 C50,130 80,120 90,140 C100,160 60,170 40,150 Z" fill="#95B282" opacity="0.5"/>
+            <path d="M70,110 C80,90 110,80 120,100 C130,120 90,130 70,110 Z" fill="#95B282" opacity="0.5"/>
+            <path d="M110,70 C120,50 150,40 160,60 C170,80 130,90 110,70 Z" fill="#95B282" opacity="0.5"/>
+            <circle cx="100" cy="140" r="3" fill="#ebd9c3"/>
+            <circle cx="130" cy="100" r="2.5" fill="#ebd9c3"/>
+        </svg>
+
+        <svg class="floral-corner floral-bottom-right" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10,190 C10,190 30,100 150,50" stroke="#7A9A65" stroke-width="1.5" fill="none"/>
+            <path d="M40,150 C50,130 80,120 90,140 C100,160 60,170 40,150 Z" fill="#95B282" opacity="0.5"/>
+            <path d="M70,110 C80,90 110,80 120,100 C130,120 90,130 70,110 Z" fill="#95B282" opacity="0.5"/>
+            <circle cx="90" cy="120" r="3.5" fill="#ebd9c3"/>
+        </svg>
+
+        <div class="px-8 pt-20 pb-8 text-center flex flex-col items-center">
+            <h2 class="font-sans text-xs tracking-[0.3em] uppercase text-gray-450 mb-6">Nuestra Boda</h2>
+            
+            <!-- Mensaje Romántico Inicial con Ortografía Corregida -->
+            <p class="text-xl leading-relaxed text-gray-600 italic mb-5 max-w-[320px] fade-in font-serif">
+                "El amor es solo una palabra hasta que llega la persona indicada para darle sentido."
+            </p>
+            
+            <!-- Acompáñanos en negrillas y con acentuación esdrújula correcta -->
+            <p class="text-sm font-bold text-[#b8975a] tracking-[0.18em] uppercase max-w-[300px] leading-snug mb-8 fade-in">
+                Acompáñanos a celebrar nuestra historia
+            </p>
+            
+            <div class="w-12 h-[1px] bg-[#b8975a] mb-6"></div>
+
+            <!-- Nombres de los novios -->
+            <h1 class="font-script text-7xl text-[#7a1b24] leading-tight mb-4">Daniel <br><span class="text-4xl">&</span><br> Paola</h1>
+        </div>
+
+        <div class="px-6 py-4 flex flex-col items-center fade-in">
+            <!-- Foto Grande (Horizontal / Apaisada) -->
+            <div class="polaroid w-full max-w-[330px] mb-4 rotate-1">
+                <div class="aspect-[3/2] w-full overflow-hidden bg-gray-150">
+                    <!-- Foto 1 Real de Google Drive con fallback de seguridad -->
+                    <img src="https://lh3.googleusercontent.com/d/1Swgsdv2kG8t-JeMxqz-M1ol7npuQ-nml" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'" 
+                         alt="Daniel y Paola">
+                </div>
+                <!-- Epígrafe Polaroid 1 -->
+                <p class="font-script text-center text-3xl text-gray-700 mt-2 mb-1">Tú y yo</p>
+            </div>
+            
+            <!-- Fotos Pequeñas (Siempre y Juntos en orden correcto) -->
+            <div class="flex justify-between w-full max-w-[330px] gap-4">
+                <!-- Foto 2 (Siempre) -->
+                <div class="polaroid w-1/2 -rotate-3">
+                    <div class="aspect-square w-full overflow-hidden bg-gray-150">
+                        <!-- Foto 2 Real de Google Drive con fallback de seguridad -->
+                        <img src="https://lh3.googleusercontent.com/d/1Yby7QZZzdELcFUvapSCfnRGUrLP2LkeP" 
+                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1522673607200-164d1b6ce486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'" 
+                             alt="Siempre">
+                    </div>
+                    <!-- Epígrafe Polaroid 2 -->
+                    <p class="font-script text-center text-2xl text-gray-700 mt-2 mb-1">Siempre</p>
+                </div>
+                
+                <!-- Foto 3 (Juntos) -->
+                <div class="polaroid w-1/2 rotate-3">
+                    <div class="aspect-square w-full overflow-hidden bg-gray-150">
+                        <!-- Foto 3 Real de Google Drive con fallback de seguridad -->
+                        <img src="https://lh3.googleusercontent.com/d/105FP5PN_OQGVsNWnUcs-xu-6R3_3jAjV" 
+                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'" 
+                             alt="Juntos">
+                    </div>
+                    <!-- Epígrafe Polaroid 3 -->
+                    <p class="font-script text-center text-2xl text-gray-700 mt-2 mb-1">Juntos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-8 py-10 text-center flex flex-col items-center border-t border-[#eae6db] mt-8 fade-in">
+            <i class="fa-solid fa-champagne-glasses text-3xl text-[#b8975a] mb-4"></i>
+            <h3 class="font-sans text-lg tracking-[0.1em] uppercase text-[#7a1b24] font-semibold mb-6">Ceremonia & Fiesta</h3>
+            
+            <!-- Cuenta Regresiva Integrada Directamente Sobre la Fecha -->
+            <div class="w-full max-w-[290px] mb-6 py-4 px-2 border-y border-[#b8975a]/20">
+                <p class="font-sans text-[10px] uppercase tracking-[0.25em] text-[#b8975a] mb-4 font-semibold">Faltan</p>
+                
+                <div class="flex justify-center gap-3 font-sans text-[#7a1b24] justify-items-center">
+                    <div class="flex flex-col items-center w-12">
+                        <span id="days" class="text-2xl font-light">00</span>
+                        <span class="text-[0.55rem] uppercase tracking-wider text-gray-400 mt-0.5">Días</span>
+                    </div>
+                    <span class="text-xl font-light text-[#b8975a]">:</span>
+                    <div class="flex flex-col items-center w-12">
+                        <span id="hours" class="text-2xl font-light">00</span>
+                        <span class="text-[0.55rem] uppercase tracking-wider text-gray-400 mt-0.5">Horas</span>
+                    </div>
+                    <span class="text-xl font-light text-[#b8975a]">:</span>
+                    <div class="flex flex-col items-center w-12">
+                        <span id="minutes" class="text-2xl font-light">00</span>
+                        <span class="text-[0.55rem] uppercase tracking-wider text-gray-400 mt-0.5">Min</span>
+                    </div>
+                    <span class="text-xl font-light text-[#b8975a]">:</span>
+                    <div class="flex flex-col items-center w-12">
+                        <span id="seconds" class="text-2xl font-light">00</span>
+                        <span class="text-[0.55rem] uppercase tracking-wider text-gray-400 mt-0.5">Seg</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta destacada para la fecha y el horario -->
+            <div class="bg-white/80 border border-[#b8975a]/30 rounded-2xl px-6 py-5 mb-6 shadow-md max-w-[290px] w-full transform hover:scale-[1.01] transition-transform backdrop-blur-sm">
+                <p class="font-sans text-[11px] uppercase tracking-[0.2em] text-[#b8975a] font-semibold mb-1">Domingo</p>
+                <p class="text-3xl font-light text-[#7a1b24] tracking-wide mb-1">27 de Septiembre</p>
+                <p class="text-xl font-semibold text-[#b8975a] tracking-wider mb-2">2026</p>
+                <div class="w-12 h-[1px] bg-[#b8975a]/40 mx-auto my-2"></div>
+                <p class="font-sans text-xs tracking-[0.15em] text-gray-600 font-bold uppercase flex items-center justify-center gap-1.5">
+                    <i class="fa-regular fa-clock text-[#7a1b24] text-xs"></i> 14:00 PM
+                </p>
+            </div>
+            
+            <p class="text-2xl font-semibold text-gray-800 mb-2">Jano's Acceso Oeste</p>
+            <p class="text-base text-gray-500 mb-8 max-w-[280px]">Colectora Norte Km 31.5,<br>Paso del Rey, Buenos Aires</p>
+
+            <a href="https://maps.google.com/?q=Janos+Acceso+Oeste,+Paso+del+Rey,+Provincia+de+Buenos+Aires" target="_blank" class="btn-elegante">
+                <i class="fa-solid fa-map-location-dot mr-2"></i> Ver Ubicación
+            </a>
+        </div>
+
+        <!-- Código de Vestimenta - Refinado y Sobrio -->
+        <div class="px-8 py-10 text-center flex flex-col items-center border-t border-[#eae6db] mt-8 fade-in">
+            <h3 class="font-sans text-xs tracking-[0.3em] uppercase text-[#b8975a] mb-3">Código de Vestimenta</h3>
+            <p class="text-2xl font-light text-[#7a1b24] tracking-[0.2em] uppercase">Formal</p>
+        </div>
+
+        <!-- Mesa de Regalos con Ortografía y Puntuación Optimizadas al 100% -->
+        <div class="px-8 py-12 text-center flex flex-col items-center border-t border-[#eae6db] mt-8 fade-in">
+            <h3 class="font-sans text-xs tracking-[0.3em] uppercase text-[#b8975a] mb-4">Nuestro regalo</h3>
+            
+            <p class="text-base leading-relaxed mb-6 max-w-[320px] font-serif italic text-gray-600">
+                Lo más lindo es poder celebrar ese día junto a ustedes. Si desean hacernos un obsequio, una contribución destinada a nuestros futuros proyectos y sueños en común será un regalo que recibiremos con mucho cariño y gratitud.
+            </p>
+            
+            <div class="bg-white px-6 py-4 rounded-xl border border-[#eae6db] shadow-sm mb-4 w-full max-w-[290px]">
+                <p class="font-sans text-[10px] uppercase tracking-wider text-gray-400 mb-1">Alias Bancario</p>
+                <p class="font-sans text-lg font-bold text-[#7a1b24] tracking-wide" id="alias-text">boda.pao.dani</p>
+            </div>
+            
+            <button onclick="copiarAlias()" class="text-xs text-[#b8975a] uppercase tracking-widest font-semibold font-sans hover:text-[#7a1b24] transition-colors focus:outline-none">
+                <i class="fa-regular fa-copy mr-1"></i> Copiar Alias
+            </button>
+            <p id="copy-msg" class="text-xs text-green-600 mt-2 opacity-0 transition-opacity">¡Copiado con éxito!</p>
+        </div>
+
+        <!-- Confirmación de Asistencia -->
+        <div class="px-8 py-12 text-center flex flex-col items-center bg-[#f8f6f1] border-t border-[#eae6db] fade-in">
+            <i class="fa-regular fa-envelope-open text-2xl text-[#b8975a] mb-4"></i>
+            <h3 class="font-sans text-lg tracking-[0.1em] uppercase text-[#7a1b24] font-semibold mb-4">Confirmación</h3>
+            
+            <p class="text-lg text-gray-650 leading-relaxed mb-8 max-w-[300px]">
+                Por favor, confírmanos tu asistencia para poder organizar cada momento con el mayor amor.
+            </p>
+            
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1YoWWqBqW6EB0-rlV807CWR6j3sGzUgOv3jpqEBVDKRzL3w/viewform?usp=header" target="_blank" class="btn-elegante mb-6 bg-[#7a1b24] text-white border-[#7a1b24] hover:bg-[#962631] hover:border-[#962631]">
+                Confirmar Asistencia
+            </a>
+
+            <!-- Recuadro sumamente resaltado y refinado para la confirmación -->
+            <div class="mt-4 px-6 py-4 border-2 border-[#b8975a] max-w-[290px] bg-[#FFFDF9] rounded-xl shadow-md transform hover:scale-[1.02] transition-transform">
+                <p class="font-sans text-xs font-bold text-[#7a1b24] uppercase tracking-[0.18em] leading-relaxed">
+                    ⏰ Esperamos tu confirmación <br> <span class="text-sm border-b border-[#b8975a]/40 pb-0.5 block mt-1 font-extrabold text-[#7a1b24]">hasta el 05 de agosto de 2026</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Cierre de la carta con iniciales -->
+        <div class="pt-16 pb-4 text-center fade-in">
+            <h1 class="font-script text-6xl text-[#7a1b24]">D & P</h1>
+        </div>
+
+    </div>
+
+    <!-- BOTÓN DE MÚSICA FLOTANTE -->
+    <button id="music-btn" onclick="toggleMusic()">
+        <i id="music-icon" class="fa-solid fa-music"></i>
+    </button>
+
+    <script>
+        // DOM Elements
+        const envelopeContainer = document.getElementById('envelope-container');
+        const envelopeFlap = document.getElementById('envelopeFlap');
+        const envelopeLetter = document.getElementById('envelopeLetter');
+        const waxSeal = document.getElementById('waxSeal');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('music-btn');
+        const musicIcon = document.getElementById('music-icon');
+        let isMusicPlaying = false;
+
+        // Abrir la invitación de manera interactiva
+        function abrirInvitacion() {
+            // Activar música de fondo
+            bgMusic.volume = 0.4;
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicIcon.classList.remove('fa-music');
+                musicIcon.classList.add('fa-pause');
+            }).catch(error => {
+                console.log("Reproducción automática bloqueada. Esperando interacción manual.");
+            });
+
+            // 1. Desaparecer el sello de cera simulando que se rompe
+            waxSeal.classList.add('wax-seal-opened');
+
+            // 2. Abrir la solapa del sobre tras una pequeña pausa
+            setTimeout(() => {
+                envelopeFlap.classList.add('open');
+            }, 300);
+
+            // 3. Hacer emerger la carta
+            setTimeout(() => {
+                envelopeLetter.classList.add('emerged');
+            }, 800);
+
+            // 4. Ocultar el sobre por completo revelando la hermosa invitación real
+            setTimeout(() => {
+                envelopeContainer.classList.add('envelope-hidden');
+                musicBtn.style.display = 'flex';
+                // Forzar activación de animaciones de scroll visibles al inicio
+                checkFadeElements();
+            }, 2300);
+        }
+
+        // Controlar play/pausa del reproductor
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicIcon.classList.remove('fa-pause');
+                musicIcon.classList.add('fa-music');
+            } else {
+                bgMusic.play();
+                musicIcon.classList.remove('fa-music');
+                musicIcon.classList.add('fa-pause');
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // Configuración de la Cuenta Regresiva
+        // Fecha del evento: 27 de Septiembre de 2026 a las 14:00 PM
+        const targetDate = new Date("Sep 27, 2026 14:00:00").getTime();
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerHTML = "00";
+                document.getElementById("hours").innerHTML = "00";
+                document.getElementById("minutes").innerHTML = "00";
+                document.getElementById("seconds").innerHTML = "00";
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+        }, 1000);
+
+        // Copiar alias al portapapeles usando el método seguro compatible
+        function copiarAlias() {
+            const aliasVal = document.getElementById('alias-text').innerText;
+            const tempInput = document.createElement("input");
+            tempInput.value = aliasVal;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            const msg = document.getElementById('copy-msg');
+            msg.style.opacity = '1';
+            setTimeout(() => {
+                msg.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Animación elegante de aparición mediante scroll (Fade-in)
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        function checkFadeElements() {
+            fadeElements.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                // Si el elemento está asomándose en el 92% de la pantalla, se activa
+                if (rect.top < windowHeight * 0.92) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Listener de scroll para disparar efectos
+        window.addEventListener('scroll', checkFadeElements);
+    </script>
+</body>
+</html>
